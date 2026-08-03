@@ -30,6 +30,11 @@ jobs:
 
     - run: npm install
 
+    # dist/ is committed but shipped as-is by `npm pack --ignore-scripts`, so the
+    # bundles have to be rebuilt from the patched sources or they keep serving
+    # unpatched code to `import`/browser consumers.
+    - run: npm run browserify
+
     - run: npm test
 
   package:
@@ -50,6 +55,10 @@ jobs:
         npm config set //time-machines-npm.sealsecurity.io/:_authToken=2025-11-12T15:18:03.524000Z
 
     - run: npm install
+
+    # Rebuild dist/ from the patched sources; `npm pack --ignore-scripts` would
+    # otherwise pack the stale committed bundles.
+    - run: npm run browserify
 
     - run: npm pack --ignore-scripts
 
